@@ -129,7 +129,8 @@ func (b *Bitstamp) WsConnect() error {
 		newOrderbook.Asks = asks
 		newOrderbook.Bids = bids
 		newOrderbook.Pair = p
-		newOrderbook.AssetType = "SPOT"
+		newOrderbook.LastUpdated = time.Unix(0, orderbookSeed.Timestamp)
+		newOrderbook.AssetType = assets.AssetTypeSpot
 
 		err = b.Websocket.Orderbook.LoadSnapshot(newOrderbook, b.GetName(), false)
 		if err != nil {
@@ -138,7 +139,7 @@ func (b *Bitstamp) WsConnect() error {
 
 		b.Websocket.DataHandler <- exchange.WebsocketOrderbookUpdate{
 			Pair:     p,
-			Asset:    "SPOT",
+			Asset:    assets.AssetTypeSpot,
 			Exchange: b.GetName(),
 		}
 
@@ -195,7 +196,7 @@ func (b *Bitstamp) WsReadData() {
 			currencyPair := common.SplitStrings(data.Channel, "_")
 			p := currency.NewPairFromString(common.StringToUpper(currencyPair[3]))
 
-			err = b.WsUpdateOrderbook(result, p, "SPOT")
+			err = b.WsUpdateOrderbook(result, p, assets.AssetTypeSpot)
 			if err != nil {
 				b.Websocket.DataHandler <- err
 				continue
@@ -218,7 +219,7 @@ func (b *Bitstamp) WsReadData() {
 				Amount:       result.Amount,
 				CurrencyPair: currency.NewPairFromString(currencyPair[2]),
 				Exchange:     b.GetName(),
-				AssetType:    "SPOT",
+				AssetType:    assets.AssetTypeSpot,
 			}
 		}
 	}

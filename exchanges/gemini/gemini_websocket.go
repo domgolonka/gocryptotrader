@@ -157,7 +157,8 @@ func (g *Gemini) WsHandleData() {
 						var newOrderbook orderbook.Base
 						newOrderbook.Asks = asks
 						newOrderbook.Bids = bids
-						newOrderbook.AssetType = "SPOT"
+						newOrderbook.AssetType = assets.AssetTypeSpot
+						newOrderbook.LastUpdated = time.Now()
 						newOrderbook.Pair = resp.Currency
 
 						err := g.Websocket.Orderbook.LoadSnapshot(newOrderbook,
@@ -169,7 +170,7 @@ func (g *Gemini) WsHandleData() {
 						}
 
 						g.Websocket.DataHandler <- exchange.WebsocketOrderbookUpdate{Pair: resp.Currency,
-							Asset:    "SPOT",
+							Asset:    assets.AssetTypeSpot,
 							Exchange: g.GetName()}
 
 					} else {
@@ -178,7 +179,7 @@ func (g *Gemini) WsHandleData() {
 								g.Websocket.DataHandler <- exchange.TradeData{
 									Timestamp:    time.Now(),
 									CurrencyPair: resp.Currency,
-									AssetType:    "SPOT",
+									AssetType:    assets.AssetTypeSpot,
 									Exchange:     g.GetName(),
 									EventTime:    result.Timestamp,
 									Price:        event.Price,
@@ -196,7 +197,7 @@ func (g *Gemini) WsHandleData() {
 										resp.Currency,
 										time.Now(),
 										g.GetName(),
-										"SPOT")
+										assets.AssetTypeSpot)
 									if err != nil {
 										g.Websocket.DataHandler <- err
 									}
@@ -206,7 +207,7 @@ func (g *Gemini) WsHandleData() {
 										resp.Currency,
 										time.Now(),
 										g.GetName(),
-										"SPOT")
+										assets.AssetTypeSpot)
 									if err != nil {
 										g.Websocket.DataHandler <- err
 									}
@@ -215,7 +216,7 @@ func (g *Gemini) WsHandleData() {
 						}
 
 						g.Websocket.DataHandler <- exchange.WebsocketOrderbookUpdate{Pair: resp.Currency,
-							Asset:    "SPOT",
+							Asset:    assets.AssetTypeSpot,
 							Exchange: g.GetName()}
 					}
 
